@@ -23,6 +23,7 @@
         <div id = "output">AI response will appear here...</div>
 
     <script>
+        let history = [];
         document.getElementById('aiForm').addEventListener('submit',async (e) => {
             e.preventDefault();
             const backend_url = "/api/chat";
@@ -33,19 +34,23 @@
             outputDiv.textContent = 'Hmm...'
         
             try {
+                history.push({role:"user", content: promptInput.value});
                 const response = await fetch(backend_url,{
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({ messages: [{ role: "user", content: promptInput.value }] })
+                    body: JSON.stringify({ messages: history})
                 });
 
                 if (!response.ok) {
                     throw new Error(`Server Error:${response.status} Fix code`);
                 }
                 const data = await response.json();
+                history.push({ role: "assistant", content: data.reply });
                 outputDiv.textContent = data.reply;
+                promptInput.value= "";
             } 
             catch (error) {
+                history.pop();
                 outputDiv.textContent = `Error: ${error.message}`;
                 console.error('Connection failed', error);
             }
