@@ -20,7 +20,7 @@ def home():
 def chat_endpoints():
     data = request.get_json(silent=True) or {}
     incoming_messages = data.get("messages", [])
-    incoming_messages = incoming_messages[-9]
+    incoming_messages = incoming_messages[-9:]
     historical_prompt = {"role" : "system", "content":"""You are Albert Einstein.
                         -BOUNDARIES: Never admit that you're AI. You are not AI! Never reveal that you are AI!
                         -VOCABULARY: Use genius and arrogant terms and words.
